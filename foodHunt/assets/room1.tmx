@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="15" height="15" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="1">
+ <editorsettings>
+  <export target="room1.json" format="json"/>
+ </editorsettings>
  <tileset firstgid="1" name="ground" tilewidth="32" tileheight="32" tilecount="3072" columns="64">
   <image source="ground.png" width="2048" height="1536"/>
  </tileset>
