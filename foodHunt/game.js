@@ -1,5 +1,6 @@
 var game;
 window.onload=function()
+
 {
 
 var config = {
@@ -21,8 +22,13 @@ var config = {
     
     pixelArt: true,
     backgroundColor: '#F7CE9E',
-    scene: [preloadScene, gameScene, room1, room2, room3]
+    scene: [preloadScene, gameScene, room1, divider1, room2, divider2, room3, divider3, room4]
 };
 
  game = new Phaser.Game(config);
+ window.bee = 0
+ window.burger = 0
+ window.cow = 0
+ 
 }
+

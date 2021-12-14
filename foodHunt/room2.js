@@ -8,7 +8,7 @@ class room2 extends Phaser.Scene {
 
 
     init(data) {
-    
+      this.playerPos = data.playerPos
     }
 
     preload() {
@@ -19,12 +19,34 @@ class room2 extends Phaser.Scene {
 
       // // characters
       this.load.atlas("girl", "assets/player.png", "assets/player.json");
+
+      this.load.spritesheet("burger1","assets/burger.png",{
+        frameWidth: 20,
+        frameHeight: 18.5,
+      });
         
+      this.load.audio("pop","assets/pop.mp3");
+      this.load.audio("game2","assets/game2.mp3");
+      // this.load.audio("footstep","assets/footstep.mp3");
 
     }
 
     create() {
         console.log("*** room2 scene");
+
+        this.music = this.sound
+        .add("game2",{
+            loop : true,
+        })
+        .setVolume(0.4);
+        this.game2 = this.music;
+
+        this.music.play();
+
+
+        this.popsnd = this.sound.add('pop');
+        // this.footsnd = this.sound.add('footstep');
+
 
         var map = this.make.tilemap({key:'room2'});
 
@@ -35,7 +57,7 @@ class room2 extends Phaser.Scene {
     this.groundLayer = map.createLayer('groundLayer',tilesArray,0,0)
     this.fenceLayer = map.createLayer('fenceLayer',tilesArray,0,0)
     this.fenceLayer2 = map.createLayer('fenceLayer2',tilesArray,0,0)
-    this.burgerLayer = map.createLayer('burgerLayer',tilesArray,0,0)
+    // this.burgerLayer = map.createLayer('burgerLayer',tilesArray,0,0)
 
   this.anims.create({ 
       key: 'left', 
@@ -91,6 +113,23 @@ class room2 extends Phaser.Scene {
   this.physics.world.bounds.width = this.groundLayer.width*2;
   this.physics.world.bounds.height = this.groundLayer.height*2;
 
+  this.anims.create({
+    key:"burgerAnims",
+    frames:this.anims.generateFrameNumbers("burger1",{
+      start:0,
+      end: 1,
+    }),
+      frameRate: 5,
+      repeat: -1,
+  });
+
+  this.enemyburger = this.physics.add
+  .sprite(180,60,"burger1")
+  .play("burgerAnims")
+  .setScale(1)
+  .setSize(12,12);
+
+
 //   //////////////////
 this.player = this.physics.add.sprite(383, 450, 'girl').setScale(1)
   
@@ -99,15 +138,20 @@ this.player = this.physics.add.sprite(383, 450, 'girl').setScale(1)
 
   this.player.setCollideWorldBounds(true); // don't go out of the this.map
 
-  this.burgerLayer.setCollisionByExclusion(-1, true);
+  // this.burgerLayer.setCollisionByExclusion(-1, true);
   this.fenceLayer.setCollisionByExclusion(-1, true);
   this.fenceLayer2.setCollisionByExclusion(-1, true);
 
-  this.physics.add.collider(this.player,this.burgerLayer);
+  // this.physics.add.collider(this.player,this.burgerLayer);
   this.physics.add.collider(this.player,this.fenceLayer);
   this.physics.add.collider(this.player,this.fenceLayer2);
   
-
+  this.physics.add.overlap(
+    this.player,
+    this.enemyburger,
+    this.collectBurger,
+    null,this
+  );
 
   //  Input Events
   this.cursors = this.input.keyboard.createCursorKeys();
@@ -125,39 +169,63 @@ this.player = this.physics.add.sprite(383, 450, 'girl').setScale(1)
             this.player.y > 23 &&
             this.player.y < 33
           ) {
-            this.gameScene();
+            this.divider2();
           }
       
       
       
           if (this.cursors.left.isDown) {
+            // this.footsnd.play();
             this.player.body.setVelocityX(-200);
             this.player.anims.play("left", true); // walk left
           } 
           else if (this.cursors.right.isDown) {
+            // this.footsnd.play();
             this.player.body.setVelocityX(200);
             this.player.anims.play("right", true);
-          } else if (this.cursors.up.isDown) {
+          } 
+          else if (this.cursors.up.isDown) {
+            // this.footsnd.play();
             this.player.body.setVelocityY(-200);
             this.player.anims.play("back", true);
             //console.log('front');
-          } else if (this.cursors.down.isDown) {
+          } 
+          else if (this.cursors.down.isDown) {
+            // this.footsnd.play();
             this.player.body.setVelocityY(200);
             this.player.anims.play("front", true);
             //console.log('back');
-          } else {
+          }
+          else {
             this.player.anims.stop();
             this.player.body.setVelocity(0, 0);
           }
         } /////////////////// end of update //////////////////////////////
       
         // Function to jump back to gamescene
-        gameScene(player, tile) {
-          console.log("gameScene function");
-          this.scene.start('gameScene')
+        divider2(player, title) {
+          console.log("divider2 function");
+          let playerPos = {};
+          playerPos.x = 200;
+          playerPos.y = 112;
+          playerPos.dir ="girl"
+          this.game2.loop = false;
+          this.game2.stop();
+          this.scene.start('divider2',{playerPos:playerPos})
         }
        
-    
+        // function to collect burger
+        collectBurger(player,burger){
+          console.log("collectBurger");
+
+          this.popsnd.play();
+ 
+           window.burger = window.burger + 1;
+     console.log("burger1", window.burger);
+     burger.disableBody(true,true);
+
+ 
+     }
 
     
 

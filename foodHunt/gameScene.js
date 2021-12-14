@@ -4,6 +4,11 @@ class gameScene extends Phaser.Scene {
       super({ key: 'gameScene' });
   }
 
+
+  init(data) {
+    this.playerPos = data.playerPos
+   }
+
   preload() {
 
       var map = this.load.tilemapTiledJSON('world','assets/worldmap.json')
@@ -15,6 +20,10 @@ class gameScene extends Phaser.Scene {
       // // characters
       this.load.atlas('girl', 'assets/player.png', 'assets/player.json');
 
+      // //audio
+      this.load.audio('bgm','assets/bgm.mp3');
+      this.load.audio("pop","assets/pop.mp3");
+
 
 
 
@@ -23,6 +32,15 @@ class gameScene extends Phaser.Scene {
   create (){
 
   console.log("world map")
+
+  this.music = this.sound
+  .add("bgm",{
+      loop : true,
+  })
+  .setVolume(0.4);
+  this.bgm = this.music;
+
+  this.music.play();
 
   var map = this.make.tilemap({key:'world'});
 
@@ -109,7 +127,12 @@ class gameScene extends Phaser.Scene {
 
 
   // load player into physics, where it starts when it is in this map
-  this.player = this.physics.add.sprite(180, 420, 'girl').setScale(1)
+  // this.player = this.physics.add.sprite(180, 420, 'girl').setScale(1)
+  this.player = this.physics.add.sprite(
+    this.playerPos.x,
+    this.playerPos.y,
+    this.playerPos.dir
+  )
   
   // enable
   window.player = this.player;
@@ -144,7 +167,7 @@ class gameScene extends Phaser.Scene {
       this.player.y > 78 &&
       this.player.y < 80
     ) {
-      this.room1();
+      this.room3();
     }
 
     // room2
@@ -164,9 +187,18 @@ class gameScene extends Phaser.Scene {
       this.player.y > 78 &&
       this.player.y < 80
     ) {
-      this.room3();
+      this.room1();
     }
 
+    // room4
+    if(
+      this.player.x > 120 &&
+      this.player.x < 138 &&
+      this.player.y > 430 &&
+      this.player.y < 432
+    ) {
+      this.room4();
+    }
 
 
     if (this.cursors.left.isDown) {
@@ -191,19 +223,32 @@ class gameScene extends Phaser.Scene {
   } /////////////////// end of update //////////////////////////////
 
 //   // Function to jump to room1
-  room1(player, tile) {
+  room1(player, title) {
     console.log("room1 function");
+    this.bgm.loop = false;
+    this.bgm.stop();
     this.scene.start('room1');
   }
 
-  room2(player, tile) {
+  room2(player, title) {
     console.log("room2 function");
+    this.bgm.loop = false;
+    this.bgm.stop();
     this.scene.start('room2');
   }
 
-  room3(player, tile) {
+  room3(player, title) {
     console.log("room3 function");
+    this.bgm.loop = false;
+    this.bgm.stop();
     this.scene.start('room3');
+  }
+
+  room4(player, title) {
+    console.log("room4 function");
+    this.bgm.loop = false;
+    this.bgm.stop();
+    this.scene.start('room4');
   }
 
 } 
